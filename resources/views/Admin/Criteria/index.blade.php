@@ -37,7 +37,7 @@
                                     <th>Kode</th>
                                     <th>Nama Kriteria</th>
                                     <th class="text-center">Atribut</th>
-                                    <th class="text-center">Bobot</th>
+                                    {{-- <th class="text-center">Bobot</th> --}}
                                     <th class="text-center" width="150">Aksi</th>
                                 </tr>
                             </thead>
@@ -62,11 +62,11 @@
                                             @endif
                                         </td>
 
-                                        <td class="text-center">
+                                        {{-- <td class="text-center">
                                             <span class="badge bg-primary">
                                                 {{ number_format($item->bobot ?? 0, 4) }}
                                             </span>
-                                        </td>
+                                        </td> --}}
 
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center gap-2">

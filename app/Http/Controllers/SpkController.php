@@ -11,27 +11,26 @@ use App\Services\AhpService;
 class SpkController extends Controller
 {
     public function testAhp(AhpService $ahp) {
-        $result = $ahp->calculate();
 
-        // return $result;
+        try {
+            $result = $ahp->calculate();
 
-        return view('Ahp.test', [
-            'matrix'      => $result['matrix'],
-            'normalized'  => $result['normalized'],
-            'weights'     => $result['weights'],
-            'lambda_max'  => $result['lambdaMax'],
-            'ci'          => $result['ci'],
-            'cr'          => $result['cr'],
-            'consistent'  => $result['consistent'],
-            'ahpResult' => $result
-        ]);
 
-        // $criterias = Criteria::all();
+            return view('Ahp.test', [
+                'matrix'      => $result['matrix'],
+                'normalized'  => $result['normalized'],
+                'weights'     => $result['weights'],
+                'lambda_max'  => $result['lambdaMax'],
+                'ci'          => $result['ci'],
+                'cr'          => $result['cr'],
+                'consistent'  => $result['consistent'],
+                'ahpResult' => $result
+            ]);
 
-        // $comparisons = ComparisonMatrix::all();
 
-        // $ahpResult = (new AhpService())->calculate();
-        // return view('Ahp.test', compact('criterias','comparisons','ahpResult'));
-
+        } catch (\Exception $e) {
+            // Tangkap error dari service, lalu redirect di sini
+            return redirect('/comparison-matrix')->with('errorMatrix', $e->getMessage());
+        }
     }
 }

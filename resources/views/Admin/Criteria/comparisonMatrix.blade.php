@@ -3,6 +3,19 @@
 @section('title', 'Perbandingan Kriteria AHP')
 
 @section('container')
+
+    @session('errorMatrix')
+        <script src="{{ asset('Admin/js/sweetalert2.all.min.js') }}"></script>
+
+        <script>
+            Swal.fire({
+                title: "Terdapat Kesalahan",
+                text: "Nilai Perbandingan Kriteria Belum Lengkap",
+                icon: "error"
+            });
+        </script>
+    @endsession
+
     <div class="card shadow-sm border-0">
         <div class="card-body">
 

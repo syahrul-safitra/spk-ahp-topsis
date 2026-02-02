@@ -13,6 +13,7 @@ class AhpService
         $n = $kriteria->count();
 
         if ($n < 2) {
+
             throw new \Exception('Jumlah kriteria minimal 2');
         }
 

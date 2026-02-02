@@ -22,11 +22,13 @@ Route::get('/', function () {
 });
 
 // ==================== Admin =============================
+Route::get('/dashboard', [CriteriaController::class, 'dashboard']);
 Route::resource('criteria', CriteriaController::class);
 Route::get('/comparison-matrix', [ComparisonMatrixController::class, 'index']);
 Route::post('/comparison-matrix', [ComparisonMatrixController::class, 'store']);
 Route::resource('/alternative', AlternativeController::class);
 Route::get('/ranking', [AlternativeController::class, 'ranking']);
+Route::post('/topsis-pdf', [AlternativeController::class, 'pdf']);
 
 
 Route::get('/ahp-test', [SpkController::class, 'testAhp']);

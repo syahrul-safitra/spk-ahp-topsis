@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Services\TopsisService;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\Alternative;
 use App\Models\Criteria;
 use Illuminate\Http\Request;
+
+use Intervention\Image\Facades\Image;
 
 use Illuminate\Support\Facades\DB;
 
@@ -124,19 +127,19 @@ class AlternativeController extends Controller
     {
         $data = $topsis->calculate();
 
-        // $rankings = Alternative::with('values')
-        //     ->get()
-        //     ->sortByDesc('skor')
-        //     ->values();
-
-
-        // // return $rankings;
-        // return view('Admin.Alternative.ranking', [
-        //     'result' => $result,
-        //     'rankings' => $rankings            
-        // ]);
-
         return view('Admin.Alternative.ranking', $data);
+    }
+
+    public function pdf(TopsisService $topsis, Request $request) {
+
+        $data = $topsis->calculate();
+        
+        $data['chartImage'] = $request->chart_image;
+        
+        return Pdf::loadView('Admin.Alternative.pdf', $data)
+            ->setPaper('A4', 'landscape')
+            ->stream('laporan_topsis.pdf');
+
     }
 
 

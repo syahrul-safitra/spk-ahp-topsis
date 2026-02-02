@@ -10,6 +10,11 @@ class CriteriaController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function dashboard() {
+        return view("Admin.dashboard");
+    }
+
     public function index()
     {
         return view("Admin.Criteria.index", [
