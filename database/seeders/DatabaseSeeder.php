@@ -14,16 +14,18 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        $this->call([
-            CriteriaSeeder::class,
-            ComparisonMatrixSeeder::class,
-            AlternativeSeeder::class,
-            AlternativeValueSeeder::class,
+        \App\Models\User::create([
+            'name' => 'admin',
+            'email' => 'admin@gmail.com',
+            'is_admin' => 1,
+            'password' => bcrypt('password'),
         ]);
+
+        // $this->call([
+        //     CriteriaSeeder::class,
+        //     ComparisonMatrixSeeder::class,
+        //     AlternativeSeeder::class,
+        //     AlternativeValueSeeder::class,
+        // ]);
     }
 }

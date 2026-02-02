@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\TopsisService;
-use Barryvdh\DomPDF\Facade\Pdf;
-
 use App\Models\Alternative;
 use App\Models\Criteria;
+use App\Services\TopsisService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-
-use Intervention\Image\Facades\Image;
-
 use Illuminate\Support\Facades\DB;
 
 class AlternativeController extends Controller
@@ -20,8 +16,10 @@ class AlternativeController extends Controller
      */
     public function index()
     {
-        return view('Admin.Alternative.index', [
-            'alternatives' => Alternative::all()
+
+        return view('Template.Alternative.index', [
+            'alternatives' => Alternative::all(),
+            'criterias' => Criteria::count(),
         ]);
     }
 
@@ -30,8 +28,8 @@ class AlternativeController extends Controller
      */
     public function create()
     {
-        return view('Admin.Alternative.create', [
-            'criterias' => Criteria::all()
+        return view('Template.Alternative.create', [
+            'criterias' => Criteria::all(),
         ]);
     }
 
@@ -47,7 +45,6 @@ class AlternativeController extends Controller
             'nilai.*' => 'required|numeric|min:0',
         ]);
 
-        
         DB::transaction(function () use ($request) {
             // Buat alternatif baru
             $alternative = Alternative::create([
@@ -64,11 +61,9 @@ class AlternativeController extends Controller
             }
         });
 
-
         return redirect('alternative')
-                        ->with('success', 'Alternatif berhasil ditambahkan.');
+            ->with('success', 'Alternatif berhasil ditambahkan.');
     }
-
 
     /**
      * Display the specified resource.
@@ -83,9 +78,9 @@ class AlternativeController extends Controller
      */
     public function edit(Alternative $alternative)
     {
-        return view('Admin.Alternative.edit', [
+        return view('Template.Alternative.edit', [
             'alternative' => $alternative,
-            'criterias' => Criteria::all()
+            'criterias' => Criteria::all(),
         ]);
     }
 
@@ -95,7 +90,7 @@ class AlternativeController extends Controller
     public function update(Request $request, Alternative $alternative)
     {
         $request->validate([
-            'nama' => 'required|string|max:255|unique:alternatives,nama,' . $alternative->id,
+            'nama' => 'required|string|max:255|unique:alternatives,nama,'.$alternative->id,
             'keterangan' => 'nullable|string',
             'nilai' => 'required|array',
             'nilai.*' => 'required|numeric|min:0',
@@ -120,28 +115,28 @@ class AlternativeController extends Controller
         });
 
         return redirect('alternative')
-                        ->with('success', 'Alternatif berhasil diperbarui.');
+            ->with('success', 'Alternatif berhasil diperbarui.');
     }
 
     public function ranking(TopsisService $topsis)
     {
         $data = $topsis->calculate();
 
-        return view('Admin.Alternative.ranking', $data);
+        return view('Template.Alternative.ranking', $data);
     }
 
-    public function pdf(TopsisService $topsis, Request $request) {
+    public function pdf(TopsisService $topsis, Request $request)
+    {
 
         $data = $topsis->calculate();
-        
+
         $data['chartImage'] = $request->chart_image;
-        
-        return Pdf::loadView('Admin.Alternative.pdf', $data)
+
+        return Pdf::loadView('Template.Alternative.pdf', $data)
             ->setPaper('A4', 'landscape')
             ->stream('laporan_topsis.pdf');
 
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -150,6 +145,6 @@ class AlternativeController extends Controller
     {
         $alternative->delete();
 
-        return back()->with('success', "Berhasil menghapus data");
+        return back()->with('success', 'Berhasil menghapus data');
     }
 }

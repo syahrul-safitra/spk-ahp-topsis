@@ -1,21 +1,21 @@
-@extends('Admin.Layouts.main')
+@extends("Admin.Layouts.main")
 
-@section('title', 'Data Kriteria AHP')
+@section("title", "Data Kriteria AHP")
 
-@section('container')
+@section("container")
     <div class="row">
         <div class="col-12">
 
             <!-- HEADER -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h4 class="mb-0">
-                    <i class="bi bi-diagram-3-fill me-2 text-primary"></i>Perbandingan Kriteria (AHP)
+                    <i class="bi bi-diagram-3-fill text-primary me-2"></i>Perbandingan Kriteria (AHP)
                 </h4>
             </div>
 
             <!-- ALERT CR & Consistency -->
             {{-- @if (isset($ahpResult))
-                @if ($ahpResult['consistent'])
+                @if ($ahpResult["consistent"])
                     <div class="alert alert-success">
                         Matriks konsisten ✅ - CR = {{ number_format($ahpResult['cr'], 4) }}
                     </div>
@@ -31,7 +31,7 @@
             @if (isset($matrix))
                 <h5>Matriks Perbandingan</h5>
                 <div class="table-responsive mb-3">
-                    <table class="table table-bordered text-center">
+                    <table class="table-bordered table text-center">
                         <thead class="table-light">
                             <tr>
                                 <th>Kriteria</th>
@@ -58,7 +58,7 @@
             @if (isset($normalized))
                 <h5>Matriks Normalisasi</h5>
                 <div class="table-responsive mb-3">
-                    <table class="table table-bordered text-center">
+                    <table class="table-bordered table text-center">
                         <thead class="table-light">
                             <tr>
                                 <th>Kriteria</th>
@@ -85,7 +85,7 @@
             @if (isset($weights))
                 <h5>Bobot Kriteria</h5>
                 <div class="table-responsive mb-3">
-                    <table class="table table-bordered text-center">
+                    <table class="table-bordered table text-center">
                         <thead class="table-light">
                             <tr>
                                 <th>Kriteria</th>
@@ -108,12 +108,12 @@
             @if (isset($ahpResult))
                 <h5>Uji Konsistensi</h5>
                 <ul>
-                    <li>λ max : {{ number_format($ahpResult['lambdaMax'], 4) }}</li>
-                    <li>CI : {{ number_format($ahpResult['ci'], 4) }}</li>
-                    <li>CR : {{ number_format($ahpResult['cr'], 4) }}</li>
+                    <li>λ max : {{ number_format($ahpResult["lambdaMax"], 4) }}</li>
+                    <li>CI : {{ number_format($ahpResult["ci"], 4) }}</li>
+                    <li>CR : {{ number_format($ahpResult["cr"], 4) }}</li>
                 </ul>
 
-                @if ($ahpResult['consistent'])
+                @if ($ahpResult["consistent"])
                     <p class="text-success fw-bold">
                         ✅ Konsisten (CR ≤ 0.1)
                     </p>

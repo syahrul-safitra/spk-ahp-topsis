@@ -1,0 +1,278 @@
+@extends("Template.Layouts.main")
+
+@section("title", "Perbandingan Kriteria AHP")
+
+@section("content")
+    <div class="mx-auto max-w-5xl space-y-8">
+
+        @if (session("success"))
+            <div id="success-alert"
+                class="group relative mb-8 translate-y-0 transform overflow-hidden opacity-100 transition-all duration-500">
+                <div
+                    class="rounded-[2rem] bg-gradient-to-r from-emerald-500 to-teal-600 p-[1px] shadow-xl shadow-emerald-100">
+                    <div class="flex items-center justify-between rounded-[1.95rem] bg-white p-5">
+                        <div class="flex items-center gap-4">
+                            <div class="relative flex shrink-0">
+                                <span
+                                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-100 opacity-75"></span>
+                                <div
+                                    class="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="mb-1 text-sm font-black uppercase leading-none tracking-tight text-slate-800">
+                                    Berhasil Disimpan!</h4>
+                                <p class="text-xs font-medium italic text-slate-500">{{ session("success") }}</p>
+                            </div>
+                        </div>
+
+                        <button onclick="closeAlert()"
+                            class="btn btn-ghost btn-circle btn-sm text-slate-300 hover:text-slate-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // Fungsi untuk menutup alert secara halus
+                function closeAlert() {
+                    const alert = document.getElementById('success-alert');
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => alert.remove(), 500);
+                }
+
+                // Auto close setelah 5 detik
+                setTimeout(closeAlert, 5000);
+            </script>
+        @endif
+
+        @session("errorMatrix")
+            <div id="error-alert"
+                class="relative mb-8 scale-100 transform animate-[shake_0.5s_ease-in-out] transition-all duration-500">
+                <div class="rounded-[2rem] bg-gradient-to-r from-rose-500 to-orange-600 p-[1.5px] shadow-2xl shadow-rose-100">
+
+                    <div class="flex flex-col items-center justify-between gap-4 rounded-[1.95rem] bg-white p-6 md:flex-row">
+
+                        <div class="flex items-center gap-5">
+                            <div class="relative flex shrink-0">
+                                <span
+                                    class="absolute inline-flex h-full w-full animate-ping rounded-2xl bg-rose-100 opacity-75"></span>
+                                <div
+                                    class="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-100 bg-rose-50 text-rose-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="text-center md:text-left">
+                                <h4 class="text-lg font-black leading-tight tracking-tight text-slate-800">Ups! Perhitungan
+                                    Gagal</h4>
+                                <p class="mt-1 text-sm font-medium uppercase tracking-wide text-slate-500">
+                                    <span class="font-bold text-rose-600">Kesalahan:</span> Matriks Perbandingan Belum Lengkap.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="closeErrorAlert()"
+                                class="btn rounded-xl border-none bg-rose-500 px-6 font-bold normal-case text-white shadow-lg shadow-rose-200 hover:bg-rose-600">
+                                Perbaiki Sekarang
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes shake {
+
+                    0%,
+                    100% {
+                        transform: translateX(0);
+                    }
+
+                    25% {
+                        transform: translateX(-5px);
+                    }
+
+                    75% {
+                        transform: translateX(5px);
+                    }
+                }
+            </style>
+
+            <script>
+                function closeErrorAlert() {
+                    const alert = document.getElementById('error-alert');
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'scale(0.95)';
+                    setTimeout(() => alert.remove(), 400);
+                }
+            </script>
+        @endsession
+
+        <div class="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+                <h2 class="text-center text-3xl font-black tracking-tight text-slate-800 md:text-left">Prioritas Kriteria
+                </h2>
+                <p class="mt-1 text-center font-medium text-slate-500 md:text-left">Bandingkan dua kriteria dan tentukan
+                    mana
+                    yang lebih penting.</p>
+            </div>
+            <div class="hidden items-center gap-2 rounded-2xl border border-indigo-100 bg-indigo-50 px-4 py-2 md:flex">
+                <span class="text-xs font-bold uppercase tracking-widest text-indigo-600">Metode AHP</span>
+            </div>
+        </div>
+
+        <form action="{{ url("comparison-matrix") }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div
+                class="flex flex-col items-center gap-6 rounded-[2rem] bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white shadow-xl shadow-indigo-100 md:flex-row">
+                <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold text-white">Cara Menilai:</h4>
+                    <p class="text-sm leading-relaxed text-indigo-100">
+                        Pilih angka di sisi kiri jika kriteria kiri lebih penting, pilih angka 1 jika keduanya sama penting,
+                        atau pilih angka di sisi kanan jika kriteria kanan lebih penting.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+                @foreach ($criterias as $c1)
+                    @foreach ($criterias as $c2)
+                        @if ($c1->id < $c2->id)
+                            @php $currentValue = $comparisons[$c1->id][$c2->id] ?? null; @endphp
+
+                            <div
+                                class="card group rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-indigo-200 lg:p-8">
+                                <div class="flex flex-col gap-6">
+
+                                    <div class="flex items-center justify-between px-2">
+                                        <div class="flex flex-col items-start gap-1">
+                                            <span
+                                                class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Kriteria
+                                                A</span>
+                                            <h3 class="text-xl font-black text-slate-800">{{ $c1->nama }}</h3>
+                                        </div>
+
+                                        <div
+                                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-xs font-black italic text-slate-300">
+                                            VS</div>
+
+                                        <div class="flex flex-col items-end gap-1 text-right">
+                                            <span
+                                                class="text-[10px] font-black uppercase tracking-[0.2em] text-violet-500">Kriteria
+                                                B</span>
+                                            <h3 class="text-xl font-black text-slate-800">{{ $c2->nama }}</h3>
+                                        </div>
+                                    </div>
+
+                                    <div class="rounded-3xl bg-slate-50/50 p-6 lg:p-8">
+                                        <div class="flex flex-wrap items-center justify-between gap-2">
+
+                                            @foreach ([
+            "9" => "9",
+            "7" => "7",
+            "5" => "5",
+            "3" => "3"
+        ] as $val => $lbl)
+                                                <label class="group/item flex cursor-pointer flex-col items-center gap-2">
+                                                    <input type="radio"
+                                                        name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                                        value="{{ $val }}"
+                                                        class="radio radio-primary border-slate-300 transition-all checked:bg-indigo-600"
+                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? "checked" : "" }}>
+                                                    <span
+                                                        class="text-[10px] font-bold text-slate-400 group-hover/item:text-indigo-600">{{ $lbl }}</span>
+                                                </label>
+                                            @endforeach
+
+                                            <label class="group/item flex cursor-pointer flex-col items-center gap-2">
+                                                <input type="radio"
+                                                    name="nilai[{{ $c1->id }}][{{ $c2->id }}]" value="1"
+                                                    class="radio border-slate-300 transition-all checked:bg-slate-700"
+                                                    {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === "1" || is_null($currentValue) ? "checked" : "" }}>
+                                                <span class="badge badge-neutral py-3 text-[10px] font-bold">SAMA
+                                                    PENTING</span>
+                                            </label>
+
+                                            @foreach ([
+            "0.333333" => "3",
+            "0.2" => "5",
+            "0.142857" => "7",
+            "0.111111" => "9"
+        ] as $val => $lbl)
+                                                <label class="group/item flex cursor-pointer flex-col items-center gap-2">
+                                                    <input type="radio"
+                                                        name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                                        value="{{ $val }}"
+                                                        class="radio radio-secondary border-slate-300 transition-all checked:bg-violet-600"
+                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? "checked" : "" }}>
+                                                    <span
+                                                        class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
+                                                </label>
+                                            @endforeach
+
+                                        </div>
+
+                                        <div class="mt-6 flex justify-between px-1">
+                                            <span class="text-[10px] font-black uppercase italic text-slate-400">← Lebih
+                                                Penting {{ $c1->kode }}</span>
+                                            <span class="text-[10px] font-black uppercase italic text-slate-400">Lebih
+                                                Penting {{ $c2->kode }} →</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endforeach
+            </div>
+
+            @if ($criterias->count() <= 1)
+                <div class="rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-slate-50 p-12 text-center">
+                    <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-black text-slate-800">Kriteria Belum Cukup</h3>
+                    <p class="mx-auto mt-2 max-w-sm text-sm font-medium text-slate-500">
+                        Anda membutuhkan setidaknya <span class="font-bold text-indigo-600">2 kriteria</span> untuk
+                        melakukan perbandingan berpasangan (AHP).
+                    </p>
+                    <a href="{{ url("criteria") }}" class="btn btn-primary btn-sm mt-6 rounded-xl px-6 normal-case">
+                        Tambah Kriteria Sekarang
+                    </a>
+                </div>
+            @endif
+        </form>
+    </div>
+@endsection

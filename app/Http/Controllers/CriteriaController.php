@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Criteria;
+use App\Models\User;
+use App\Services\TopsisService;
 use Illuminate\Http\Request;
 
 class CriteriaController extends Controller
@@ -10,15 +12,25 @@ class CriteriaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function dashboard(TopsisService $topsis)
+    {
 
-    public function dashboard() {
-        return view("Admin.dashboard");
+        $data = $topsis->calculate();
+
+        $data['countUser'] = User::count();
+
+        return view('Template.dashboard', $data);
     }
 
     public function index()
     {
-        return view("Admin.Criteria.index", [
-            'criterias' => Criteria::all()
+
+        if (! auth()->user()->is_admin) {
+            return redirect('/');
+        }
+
+        return view('Template.Criteria.index', [
+            'criterias' => Criteria::all(),
         ]);
     }
 
@@ -27,7 +39,11 @@ class CriteriaController extends Controller
      */
     public function create()
     {
-        return view('Admin.Criteria.create');
+        if (! auth()->user()->is_admin) {
+            return redirect('/');
+        }
+
+        return view('Template.Criteria.create');
     }
 
     /**
@@ -40,7 +56,6 @@ class CriteriaController extends Controller
             'atribut' => 'required|in:benefit,cost',
         ]);
 
-
         // ambil kode terakhir (C1, C2, ...)
         $lastCriteria = Criteria::orderBy('id', 'desc')->first();
 
@@ -51,7 +66,7 @@ class CriteriaController extends Controller
             $nextNumber = 1;
         }
 
-        $kode = 'C' . $nextNumber;
+        $kode = 'C'.$nextNumber;
 
         Criteria::create([
             'kode' => $kode,
@@ -75,8 +90,12 @@ class CriteriaController extends Controller
      */
     public function edit(Criteria $criterion)
     {
-        return view('Admin.Criteria.edit', [
-            'criteria' => $criterion
+        if (! auth()->user()->is_admin) {
+            return redirect('/');
+        }
+
+        return view('Template.Criteria.edit', [
+            'criteria' => $criterion,
         ]);
     }
 
@@ -85,8 +104,8 @@ class CriteriaController extends Controller
      */
     public function update(Request $request, Criteria $criterion)
     {
-          $request->validate([
-            'nama' => 'required|unique:criterias,nama,' . $criterion->id,
+        $request->validate([
+            'nama' => 'required|unique:criterias,nama,'.$criterion->id,
             'atribut' => 'required|in:benefit,cost',
         ]);
 
@@ -105,10 +124,13 @@ class CriteriaController extends Controller
      */
     public function destroy(Criteria $criterion)
     {
+
+        if (! auth()->user()->is_admin) {
+            return redirect('/');
+        }
+
         $criterion->delete();
 
         return back()->with('success', 'Berhasil menghapus data kriteria');
     }
-
-    
 }

@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ComparisonMatrix;
-
 use App\Models\Criteria;
-
 use Illuminate\Http\Request;
 
 class ComparisonMatrixController extends Controller
@@ -15,13 +13,13 @@ class ComparisonMatrixController extends Controller
      */
     public function index()
     {
-        return view('Admin.Criteria.comparisonMatrix', [
+        return view('Template.Criteria.comparisonMatrix', [
             'criterias' => Criteria::orderBy('id')->get(),
             'comparisons' => ComparisonMatrix::all()
                 ->groupBy('criteria_1_id')
                 ->map(function ($rows) {
                     return $rows->pluck('nilai', 'criteria_2_id');
-                })
+                }),
         ]);
     }
 
@@ -69,7 +67,7 @@ class ComparisonMatrixController extends Controller
             }
         }
 
-        return back()->with('success', "Berhasil membandingkan kriteria");
+        return back()->with('success', 'Berhasil membandingkan kriteria');
 
     }
 
