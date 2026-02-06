@@ -33,7 +33,7 @@ Route::get('/ranking', [AlternativeController::class, 'ranking'])->middleware('a
 Route::post('/topsis-pdf', [AlternativeController::class, 'pdf'])->middleware('auth');
 Route::resource('/user', UserController::class)->middleware('auth');
 
-Route::get('/login', [AuthController::class, 'login'])->middleware('guest');
+Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/login', [AuthController::class, 'authentication'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 

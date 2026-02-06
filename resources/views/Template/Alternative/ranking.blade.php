@@ -1,8 +1,8 @@
-@extends("Template.Layouts.main")
+@extends('Template.Layouts.main')
 
-@section("title", "Perhitungan TOPSIS")
+@section('title', 'Perhitungan TOPSIS')
 
-@section("content")
+@section('content')
     <div class="mx-auto max-w-6xl animate-[fadeIn_0.5s_ease-out] space-y-10 pb-20">
 
         <div class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
@@ -11,23 +11,68 @@
                 <p class="text-sm font-medium text-slate-500">Proses perhitungan matematis untuk menentukan peringkat
                     terbaik.</p>
             </div>
-            <div class="flex items-center justify-between">
-                <h2 class="text-2xl font-black text-slate-800">Hasil Analisis</h2>
+            <div class="relative mb-8 rounded-[2.5rem] bg-white p-2 shadow-sm border border-slate-100">
+                <div class="flex flex-col items-center justify-between gap-6 px-6 py-4 md:flex-row">
 
-                @if (isset($results) && $results->count() > 0)
-                    <button onclick="submitPdf()" class="...">...</button>
-                @else
-                    <div
-                        class="flex items-center gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-2 text-amber-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span class="text-[10px] font-black uppercase tracking-widest">Data belum tersedia untuk
-                            diekspor</span>
+                    <div class="flex items-center gap-5">
+                        <div
+                            class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-indigo-600 shadow-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black tracking-tight text-slate-800">Hasil Analisis</h2>
+                            <div class="mt-1 flex items-center gap-2">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Status: Real-time
+                                    Data</p>
+                            </div>
+                        </div>
                     </div>
-                @endif
+
+                    <div class="flex w-full items-center justify-center md:w-auto">
+                        @if ($alternativesCount > 0)
+                            <button onclick="submitPdf()"
+                                class="group relative flex items-center gap-3 overflow-hidden rounded-2xl bg-slate-900 px-8 py-4 font-black text-white transition-all hover:bg-rose-600 hover:ring-4 hover:ring-rose-100 active:scale-95">
+
+                                <div
+                                    class="absolute -right-2 -top-2 h-12 w-12 rounded-full bg-white/10 transition-all group-hover:scale-[3]">
+                                </div>
+
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="relative z-10 h-5 w-5 fill-current text-rose-400 group-hover:text-white"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M8.27 3L3 8.27V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H8.27m.89 2H19v14H5V8.83L8.83 5l.33.33M7 15h2v2H7v-2m0-4h10v2H7v-2m0-4h10v2H7V7z" />
+                                </svg>
+
+                                <span class="relative z-10 text-sm uppercase tracking-widest">Export Laporan PDF</span>
+                            </button>
+                        @else
+                            <div
+                                class="group flex items-center gap-4 rounded-2xl border border-dashed border-amber-200 bg-amber-50/50 px-6 py-3 transition-all hover:bg-amber-50">
+                                <div
+                                    class="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-amber-600 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-[10px] font-black uppercase tracking-widest text-amber-700">Peringatan</span>
+                                    <span class="text-xs font-medium text-amber-600/80 text-nowrap">Data belum tersedia
+                                        untuk diekspor</span>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
+                </div>
             </div>
         </div>
 
@@ -51,7 +96,7 @@
                             </thead>
                             <tbody class="divide-y divide-slate-50">
                                 @foreach ($rankings as $i => $alt)
-                                    <tr class="{{ $i == 0 ? "bg-emerald-50/50" : "" }} group transition-colors">
+                                    <tr class="{{ $i == 0 ? 'bg-emerald-50/50' : '' }} group transition-colors">
                                         <td class="p-4 text-center">
                                             @if ($i == 0)
                                                 <div class="flex justify-center">
@@ -64,11 +109,11 @@
                                         </td>
                                         <td class="p-4">
                                             <span
-                                                class="{{ $i == 0 ? "text-emerald-700" : "text-slate-700" }} text-sm font-black uppercase tracking-tight">{{ $alt->nama }}</span>
+                                                class="{{ $i == 0 ? 'text-emerald-700' : 'text-slate-700' }} text-sm font-black uppercase tracking-tight">{{ $alt->nama }}</span>
                                         </td>
                                         <td class="p-4 text-right">
                                             <span
-                                                class="{{ $i == 0 ? "text-emerald-600" : "text-slate-500" }} font-mono text-sm font-bold">{{ number_format($alt->skor, 4) }}</span>
+                                                class="{{ $i == 0 ? 'text-emerald-600' : 'text-slate-500' }} font-mono text-sm font-bold">{{ number_format($alt->skor, 4) }}</span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -195,7 +240,7 @@
         </div>
     </div>
 
-    <form id="pdfForm" method="POST" action="{{ url("topsis-pdf") }}" class="hidden">
+    <form id="pdfForm" method="POST" action="{{ url('topsis-pdf') }}" class="hidden" target="_blank">
         @csrf
         <input type="hidden" name="chart_image" id="chart_image">
     </form>

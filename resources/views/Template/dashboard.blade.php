@@ -1,8 +1,8 @@
-@extends("Template.Layouts.main")
+@extends('Template.Layouts.main')
 
-@section("title", "Dashboard SPK TOPSIS")
+@section('title', 'Dashboard SPK TOPSIS')
 
-@section("content")
+@section('content')
     <div class="mx-auto max-w-7xl animate-[fadeIn_0.5s_ease-out] space-y-8 pb-10">
 
         <div>
@@ -102,18 +102,18 @@
                             class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
                             <div class="flex items-center gap-4">
                                 <div
-                                    class="{{ $index == 0 ? "bg-emerald-500 shadow-lg shadow-emerald-500/50" : "bg-slate-700" }} flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black text-white">
+                                    class="{{ $index == 0 ? 'bg-emerald-500 shadow-lg shadow-emerald-500/50' : 'bg-slate-700' }} flex h-10 w-10 items-center justify-center rounded-xl text-sm font-black text-white">
                                     {{ $index + 1 }}
                                 </div>
                                 <div>
-                                    <h4 class="text-sm font-black uppercase tracking-tight">{{ $rank["nama"] }}</h4>
+                                    <h4 class="text-sm font-black uppercase tracking-tight">{{ $rank['nama'] }}</h4>
                                     <p class="text-[10px] text-slate-400">Skor Preferensi</p>
                                 </div>
                             </div>
                             <div class="text-right">
                                 <span
-                                    class="{{ $index == 0 ? "text-emerald-400" : "text-slate-300" }} font-mono text-lg font-black">
-                                    {{ number_format($rank["skor"], 4) }}
+                                    class="{{ $index == 0 ? 'text-emerald-400' : 'text-slate-300' }} font-mono text-lg font-black">
+                                    {{ number_format($rank['skor'], 4) }}
                                 </span>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                 </div>
 
                 <div class="relative mt-8 border-t border-white/10 pt-8 text-center">
-                    <a href="{{ url("/ranking") }}"
+                    <a href="{{ url('/ranking') }}"
                         class="text-[10px] font-black uppercase italic tracking-widest text-slate-400 transition-colors hover:text-emerald-400">
                         Lihat Detail Perhitungan →
                     </a>

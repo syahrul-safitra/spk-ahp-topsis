@@ -121,6 +121,10 @@ class AlternativeController extends Controller
     public function ranking(TopsisService $topsis)
     {
         $data = $topsis->calculate();
+        $alternatives = Alternative::count();
+        $data['alternativesCount'] = $alternatives;
+
+        // return $data;
 
         return view('Template.Alternative.ranking', $data);
     }

@@ -1,7 +1,7 @@
-@extends("Template.Layouts.main")
-@section("title", "Data Alternatif")
+@extends('Template.Layouts.main')
+@section('title', 'Data Alternatif')
 
-@section("content")
+@section('content')
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <style>
@@ -32,6 +32,7 @@
             @apply bg-emerald-50 text-emerald-600 !important;
         }
     </style>
+
     <div class="mx-auto space-y-6">
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
@@ -47,9 +48,10 @@
                 </h2>
             </div>
             @if ($criterias > 0)
-                <button class="btn btn-primary rounded-2xl px-8 shadow-lg shadow-indigo-100">
+                <a href="{{ url('/alternative/create') }}"
+                    class="btn btn-primary rounded-2xl px-8 shadow-lg shadow-indigo-100">
                     Tambah Alternatif Baru
-                </button>
+                </a>
             @else
                 <button disabled class="btn btn-disabled cursor-not-allowed rounded-2xl px-8 opacity-50">
                     <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -61,6 +63,17 @@
                 </button>
             @endif
         </div>
+
+        @if (session('success'))
+            <div class="alert rounded-2xl border-emerald-100 bg-emerald-50 py-4 text-emerald-700 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-sm font-bold">{{ session('success') }}</span>
+            </div>
+        @endif
 
         <div class="card overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-sm">
             <div class="overflow-x-auto">
@@ -79,7 +92,7 @@
                             <tr class="group transition-colors hover:bg-slate-50/50">
                                 <td class="p-6 text-center">
                                     <span class="text-xs font-black text-slate-400 group-hover:text-emerald-500">
-                                        {{ str_pad($loop->iteration, 2, "0", STR_PAD_LEFT) }}
+                                        {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
                                     </span>
                                 </td>
                                 <td class="p-6">
@@ -92,7 +105,7 @@
                                 </td>
                                 <td class="p-6 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ url("alternative/" . $item->id . "/edit") }}"
+                                        <a href="{{ url('alternative/' . $item->id . '/edit') }}"
                                             class="btn btn-ghost btn-sm btn-square rounded-xl border-none text-amber-500 shadow-none transition-all hover:scale-110 hover:bg-amber-50"
                                             title="Edit Data">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -136,7 +149,7 @@
                 </form>
                 <form id="form_delete_permanent" method="POST">
                     @csrf
-                    @method("DELETE")
+                    @method('DELETE')
                     <button type="submit"
                         class="btn btn-error rounded-2xl px-8 font-black text-white shadow-xl shadow-rose-100">
                         Ya, Hapus

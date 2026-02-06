@@ -1,8 +1,8 @@
-@extends("Template.Layouts.auth")
+@extends('Template.Layouts.auth')
 
-@section("title", "Login - SIM Bulog")
+@section('title', 'Login - SIM Bulog')
 
-@section("content")
+@section('content')
     <div class="flex min-h-screen items-center justify-center bg-slate-50 p-6">
         <div class="grid w-full max-w-5xl grid-cols-1 overflow-hidden rounded-[3rem] bg-white shadow-2xl md:grid-cols-2">
 
@@ -44,7 +44,7 @@
                     <p class="mt-2 text-sm font-medium text-slate-500">Silakan masuk untuk mengelola data logistik.</p>
                 </div>
 
-                <form action="{{ url("login") }}" method="POST" class="space-y-6">
+                <form action="{{ url('login') }}" method="POST" class="space-y-6">
                     @csrf
 
                     <div class="form-control w-full">
@@ -60,11 +60,11 @@
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </span>
-                            <input type="email" name="email" value="{{ old("email") }}" required
+                            <input type="email" name="email" value="{{ old('email') }}" required
                                 class="input input-bordered w-full rounded-2xl border-slate-200 bg-slate-50 pl-12 transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
                                 placeholder="nama@bulog.co.id">
                         </div>
-                        @error("email")
+                        @error('email')
                             <span class="mt-1 px-1 text-xs font-bold text-rose-500">{{ $message }}</span>
                         @enderror
                     </div>
@@ -107,10 +107,10 @@
                     </button>
                 </form>
 
-                <p class="mt-10 text-center text-xs font-medium text-slate-400">
+                {{-- <p class="mt-10 text-center text-xs font-medium text-slate-400">
                     Mengalami kendala? <a href="#" class="font-bold text-blue-600 hover:underline">Hubungi IT Support
                         Bulog</a>
-                </p>
+                </p> --}}
             </div>
         </div>
     </div>

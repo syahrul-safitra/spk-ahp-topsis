@@ -1,11 +1,11 @@
-@extends("Template.Layouts.main")
+@extends('Template.Layouts.main')
 
-@section("title", "Perbandingan Kriteria AHP")
+@section('title', 'Perbandingan Kriteria AHP')
 
-@section("content")
+@section('content')
     <div class="mx-auto max-w-5xl space-y-8">
 
-        @if (session("success"))
+        @if (session('success'))
             <div id="success-alert"
                 class="group relative mb-8 translate-y-0 transform overflow-hidden opacity-100 transition-all duration-500">
                 <div
@@ -28,7 +28,7 @@
                             <div>
                                 <h4 class="mb-1 text-sm font-black uppercase leading-none tracking-tight text-slate-800">
                                     Berhasil Disimpan!</h4>
-                                <p class="text-xs font-medium italic text-slate-500">{{ session("success") }}</p>
+                                <p class="text-xs font-medium italic text-slate-500">{{ session('success') }}</p>
                             </div>
                         </div>
 
@@ -58,7 +58,7 @@
             </script>
         @endif
 
-        @session("errorMatrix")
+        @session('errorMatrix')
             <div id="error-alert"
                 class="relative mb-8 scale-100 transform animate-[shake_0.5s_ease-in-out] transition-all duration-500">
                 <div class="rounded-[2rem] bg-gradient-to-r from-rose-500 to-orange-600 p-[1.5px] shadow-2xl shadow-rose-100">
@@ -140,7 +140,7 @@
             </div>
         </div>
 
-        <form action="{{ url("comparison-matrix") }}" method="POST" class="space-y-6">
+        <form action="{{ url('comparison-matrix') }}" method="POST" class="space-y-6">
             @csrf
 
             <div
@@ -195,17 +195,17 @@
                                         <div class="flex flex-wrap items-center justify-between gap-2">
 
                                             @foreach ([
-            "9" => "9",
-            "7" => "7",
-            "5" => "5",
-            "3" => "3"
+            '9' => '9',
+            '7' => '7',
+            '5' => '5',
+            '3' => '3',
         ] as $val => $lbl)
                                                 <label class="group/item flex cursor-pointer flex-col items-center gap-2">
                                                     <input type="radio"
                                                         name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                                         value="{{ $val }}"
                                                         class="radio radio-primary border-slate-300 transition-all checked:bg-indigo-600"
-                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? "checked" : "" }}>
+                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
                                                     <span
                                                         class="text-[10px] font-bold text-slate-400 group-hover/item:text-indigo-600">{{ $lbl }}</span>
                                                 </label>
@@ -215,23 +215,23 @@
                                                 <input type="radio"
                                                     name="nilai[{{ $c1->id }}][{{ $c2->id }}]" value="1"
                                                     class="radio border-slate-300 transition-all checked:bg-slate-700"
-                                                    {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === "1" || is_null($currentValue) ? "checked" : "" }}>
+                                                    {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === '1' || is_null($currentValue) ? 'checked' : '' }}>
                                                 <span class="badge badge-neutral py-3 text-[10px] font-bold">SAMA
                                                     PENTING</span>
                                             </label>
 
                                             @foreach ([
-            "0.333333" => "3",
-            "0.2" => "5",
-            "0.142857" => "7",
-            "0.111111" => "9"
+            '0.333333' => '3',
+            '0.2' => '5',
+            '0.142857' => '7',
+            '0.111111' => '9',
         ] as $val => $lbl)
                                                 <label class="group/item flex cursor-pointer flex-col items-center gap-2">
                                                     <input type="radio"
                                                         name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                                         value="{{ $val }}"
                                                         class="radio radio-secondary border-slate-300 transition-all checked:bg-violet-600"
-                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? "checked" : "" }}>
+                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
                                                     <span
                                                         class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
                                                 </label>
@@ -254,7 +254,7 @@
                 @endforeach
             </div>
 
-            @if ($criterias->count() <= 1)
+            {{-- @if ($criterias->count() <= 1)
                 <div class="rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-slate-50 p-12 text-center">
                     <div class="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-3xl bg-white shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-slate-300" fill="none"
@@ -268,11 +268,38 @@
                         Anda membutuhkan setidaknya <span class="font-bold text-indigo-600">2 kriteria</span> untuk
                         melakukan perbandingan berpasangan (AHP).
                     </p>
-                    <a href="{{ url("criteria") }}" class="btn btn-primary btn-sm mt-6 rounded-xl px-6 normal-case">
+                    <a href="{{ url('criteria') }}" class="btn btn-primary btn-sm mt-6 rounded-xl px-6 normal-case">
                         Tambah Kriteria Sekarang
                     </a>
                 </div>
-            @endif
+            @endif --}}
+
+            <div class="mt-12 flex flex-col items-center gap-4">
+                @if ($criterias->count() > 1)
+                    <button type="submit"
+                        class="group flex w-full items-center justify-center gap-3 rounded-[2rem] bg-indigo-600 py-5 font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-indigo-100 transition-all hover:bg-indigo-700 hover:shadow-indigo-200 active:scale-[0.98] md:w-auto md:px-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transition-transform group-hover:scale-110"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Proses & Simpan Matriks
+                    </button>
+
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">
+                        Pastikan seluruh kriteria telah dibandingkan dengan benar
+                    </p>
+                @else
+                    <div
+                        class="flex w-full items-center justify-center gap-3 rounded-[2rem] bg-slate-100 py-5 font-black uppercase tracking-[0.2em] text-slate-400 md:w-auto md:px-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        Simpan Terkunci
+                    </div>
+                @endif
+            </div>
         </form>
     </div>
 @endsection
