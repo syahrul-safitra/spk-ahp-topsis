@@ -144,20 +144,50 @@
             @csrf
 
             <div
-                class="flex flex-col items-center gap-6 rounded-[2rem] bg-gradient-to-r from-indigo-600 to-violet-600 p-8 text-white shadow-xl shadow-indigo-100 md:flex-row">
-                <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                class="rounded-[2.5rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-8 shadow-xl shadow-indigo-100/50">
+                <div class="flex flex-col items-start gap-6 md:flex-row md:items-center">
+                    <div
+                        class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white shadow-lg shadow-indigo-100 text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h4 class="text-lg font-black uppercase tracking-tight text-slate-800">Panduan Skala Kepentingan
+                            (Saaty)</h4>
+                        <p class="text-sm font-medium leading-relaxed text-slate-500">
+                            Pilih tingkat kepentingan kriteria berdasarkan standar <span
+                                class="font-bold text-indigo-600">Analytic Hierarchy Process (AHP)</span>:
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h4 class="text-lg font-bold text-white">Cara Menilai:</h4>
-                    <p class="text-sm leading-relaxed text-indigo-100">
-                        Pilih angka di sisi kiri jika kriteria kiri lebih penting, pilih angka 1 jika keduanya sama penting,
-                        atau pilih angka di sisi kanan jika kriteria kanan lebih penting.
-                    </p>
+
+                <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-5">
+                    @php
+                        $scales = [
+                            ['val' => '1', 'title' => 'Sama Penting', 'desc' => 'Kedua kriteria berpengaruh sama'],
+                            ['val' => '3', 'title' => 'Sedikit Lebih', 'desc' => 'Satu kriteria sedikit lebih kuat'],
+                            ['val' => '5', 'title' => 'Lebih Penting', 'desc' => 'Satu kriteria berpengaruh kuat'],
+                            ['val' => '7', 'title' => 'Sangat Penting', 'desc' => 'Satu kriteria sangat dominan'],
+                            ['val' => '9', 'title' => 'Mutlak Lebih', 'desc' => 'Perbedaan sangat ekstrem'],
+                        ];
+                    @endphp
+
+                    @foreach ($scales as $scale)
+                        <div
+                            class="group rounded-2xl border border-white bg-white/60 p-4 shadow-sm transition-all hover:border-indigo-200 hover:bg-white hover:shadow-md">
+                            <span
+                                class="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">{{ $scale['val'] }}</span>
+                            <h5 class="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                {{ $scale['title'] }}</h5>
+                            <p
+                                class="mt-1 text-[9px] font-medium leading-tight text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {{ $scale['desc'] }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
@@ -213,7 +243,8 @@
 
                                             <label class="group/item flex cursor-pointer flex-col items-center gap-2">
                                                 <input type="radio"
-                                                    name="nilai[{{ $c1->id }}][{{ $c2->id }}]" value="1"
+                                                    name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                                    value="1"
                                                     class="radio border-slate-300 transition-all checked:bg-slate-700"
                                                     {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === '1' || is_null($currentValue) ? 'checked' : '' }}>
                                                 <span class="badge badge-neutral py-3 text-[10px] font-bold">SAMA
