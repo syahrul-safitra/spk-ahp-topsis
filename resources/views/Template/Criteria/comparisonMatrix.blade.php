@@ -165,27 +165,42 @@
                     </div>
                 </div>
 
-                <div class="mt-8 grid grid-cols-2 gap-4 md:grid-cols-5">
+                <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                     @php
                         $scales = [
-                            ['val' => '1', 'title' => 'Sama Penting', 'desc' => 'Kedua kriteria berpengaruh sama'],
-                            ['val' => '3', 'title' => 'Sedikit Lebih', 'desc' => 'Satu kriteria sedikit lebih kuat'],
-                            ['val' => '5', 'title' => 'Lebih Penting', 'desc' => 'Satu kriteria berpengaruh kuat'],
-                            ['val' => '7', 'title' => 'Sangat Penting', 'desc' => 'Satu kriteria sangat dominan'],
-                            ['val' => '9', 'title' => 'Mutlak Lebih', 'desc' => 'Perbedaan sangat ekstrem'],
+                            ['val' => '1', 'title' => 'Sama', 'desc' => 'Kedua kriteria berpengaruh sama'],
+                            ['val' => '3', 'title' => 'Sedikit', 'desc' => 'Satu kriteria sedikit lebih kuat'],
+                            ['val' => '5', 'title' => 'Lebih', 'desc' => 'Satu kriteria berpengaruh kuat'],
+                            ['val' => '7', 'title' => 'Sangat', 'desc' => 'Satu kriteria sangat dominan'],
+                            ['val' => '9', 'title' => 'Mutlak', 'desc' => 'Perbedaan sangat ekstrem'],
+                            ['val' => '2,4,6,8', 'title' => 'Tengah', 'desc' => 'Nilai kompromi/antara'],
                         ];
                     @endphp
 
                     @foreach ($scales as $scale)
+                        @php
+                            $isEven = $scale['val'] === '2,4,6,8';
+                        @endphp
                         <div
-                            class="group rounded-2xl border border-white bg-white/60 p-4 shadow-sm transition-all hover:border-indigo-200 hover:bg-white hover:shadow-md">
+                            class="group relative overflow-hidden rounded-2xl border transition-all duration-300 {{ $isEven ? 'border-slate-200 bg-slate-100/50' : 'border-white bg-white/60 hover:border-indigo-200 hover:bg-white hover:shadow-md' }} p-4">
+
                             <span
-                                class="block text-2xl font-black text-indigo-600 group-hover:scale-110 transition-transform">{{ $scale['val'] }}</span>
-                            <h5 class="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-700">
-                                {{ $scale['title'] }}</h5>
-                            <p
-                                class="mt-1 text-[9px] font-medium leading-tight text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                                {{ $scale['desc'] }}</p>
+                                class="absolute -right-2 -top-2 text-4xl font-black text-slate-900/[0.03] group-hover:text-indigo-600/[0.05] transition-colors">
+                                {{ is_numeric($scale['val']) ? $scale['val'] : '±' }}
+                            </span>
+
+                            <span
+                                class="relative block text-2xl font-black {{ $isEven ? 'text-slate-500' : 'text-indigo-600 group-hover:scale-110' }} transition-transform duration-300">
+                                {{ $scale['val'] }}
+                            </span>
+
+                            <h5 class="relative mt-1 text-[10px] font-black uppercase tracking-wider text-slate-700">
+                                {{ $scale['title'] }}
+                            </h5>
+
+                            <p class="relative mt-1 text-[9px] font-medium leading-tight text-slate-400">
+                                {{ $scale['desc'] }}
+                            </p>
                         </div>
                     @endforeach
                 </div>
@@ -197,87 +212,62 @@
                         @if ($c1->id < $c2->id)
                             @php $currentValue = $comparisons[$c1->id][$c2->id] ?? null; @endphp
 
-                            <div
-                                class="card group rounded-[2rem] border border-slate-100 bg-white p-6 shadow-sm transition-all hover:border-indigo-200 lg:p-8">
-                                <div class="flex flex-col gap-6">
+                            <div class="rounded-3xl bg-slate-50/50 p-6 lg:p-8">
+                                <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
 
-                                    <div class="flex items-center justify-between px-2">
-                                        <div class="flex flex-col items-start gap-1">
+                                    @foreach (['9', '8', '7', '6', '5', '4', '3', '2'] as $val)
+                                        <label class="group/item flex cursor-pointer flex-col items-center gap-2"
+                                            title="Kriteria A lebih penting skor {{ $val }}">
+                                            <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                                value="{{ $val }}"
+                                                class="radio radio-primary radio-sm border-slate-300 transition-all checked:bg-indigo-600"
+                                                {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
                                             <span
-                                                class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500">Kriteria
-                                                A</span>
-                                            <h3 class="text-xl font-black text-slate-800">{{ $c1->nama }}</h3>
-                                        </div>
+                                                class="text-[10px] font-bold text-slate-400 group-hover/item:text-indigo-600">{{ $val }}</span>
+                                        </label>
+                                    @endforeach
 
-                                        <div
-                                            class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-xs font-black italic text-slate-300">
-                                            VS</div>
+                                    <label class="group/item flex cursor-pointer flex-col items-center gap-2 mx-2">
+                                        <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                            value="1"
+                                            class="radio radio-sm border-slate-300 transition-all checked:bg-slate-700"
+                                            {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === '1' || is_null($currentValue) ? 'checked' : '' }}>
+                                        <span
+                                            class="badge badge-neutral h-5 text-[9px] font-black tracking-tighter px-2">1</span>
+                                    </label>
 
-                                        <div class="flex flex-col items-end gap-1 text-right">
+                                    @php
+                                        $rightScales = [
+                                            '0.5' => '2',
+                                            '0.333333' => '3',
+                                            '0.25' => '4',
+                                            '0.2' => '5',
+                                            '0.166667' => '6',
+                                            '0.142857' => '7',
+                                            '0.125' => '8',
+                                            '0.111111' => '9',
+                                        ];
+                                    @endphp
+
+                                    @foreach ($rightScales as $val => $lbl)
+                                        <label class="group/item flex cursor-pointer flex-col items-center gap-2"
+                                            title="Kriteria B lebih penting skor {{ $lbl }}">
+                                            <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
+                                                value="{{ $val }}"
+                                                class="radio radio-secondary radio-sm border-slate-300 transition-all checked:bg-violet-600"
+                                                {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
                                             <span
-                                                class="text-[10px] font-black uppercase tracking-[0.2em] text-violet-500">Kriteria
-                                                B</span>
-                                            <h3 class="text-xl font-black text-slate-800">{{ $c2->nama }}</h3>
-                                        </div>
-                                    </div>
+                                                class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
+                                        </label>
+                                    @endforeach
 
-                                    <div class="rounded-3xl bg-slate-50/50 p-6 lg:p-8">
-                                        <div class="flex flex-wrap items-center justify-between gap-2">
+                                </div>
 
-                                            @foreach ([
-            '9' => '9',
-            '7' => '7',
-            '5' => '5',
-            '3' => '3',
-        ] as $val => $lbl)
-                                                <label class="group/item flex cursor-pointer flex-col items-center gap-2">
-                                                    <input type="radio"
-                                                        name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
-                                                        value="{{ $val }}"
-                                                        class="radio radio-primary border-slate-300 transition-all checked:bg-indigo-600"
-                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
-                                                    <span
-                                                        class="text-[10px] font-bold text-slate-400 group-hover/item:text-indigo-600">{{ $lbl }}</span>
-                                                </label>
-                                            @endforeach
-
-                                            <label class="group/item flex cursor-pointer flex-col items-center gap-2">
-                                                <input type="radio"
-                                                    name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
-                                                    value="1"
-                                                    class="radio border-slate-300 transition-all checked:bg-slate-700"
-                                                    {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === '1' || is_null($currentValue) ? 'checked' : '' }}>
-                                                <span class="badge badge-neutral py-3 text-[10px] font-bold">SAMA
-                                                    PENTING</span>
-                                            </label>
-
-                                            @foreach ([
-            '0.333333' => '3',
-            '0.2' => '5',
-            '0.142857' => '7',
-            '0.111111' => '9',
-        ] as $val => $lbl)
-                                                <label class="group/item flex cursor-pointer flex-col items-center gap-2">
-                                                    <input type="radio"
-                                                        name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
-                                                        value="{{ $val }}"
-                                                        class="radio radio-secondary border-slate-300 transition-all checked:bg-violet-600"
-                                                        {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
-                                                    <span
-                                                        class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
-                                                </label>
-                                            @endforeach
-
-                                        </div>
-
-                                        <div class="mt-6 flex justify-between px-1">
-                                            <span class="text-[10px] font-black uppercase italic text-slate-400">← Lebih
-                                                Penting {{ $c1->kode }}</span>
-                                            <span class="text-[10px] font-black uppercase italic text-slate-400">Lebih
-                                                Penting {{ $c2->kode }} →</span>
-                                        </div>
-                                    </div>
-
+                                <div class="mt-6 flex justify-between px-1 border-t border-slate-100 pt-4">
+                                    <span class="text-[10px] font-black uppercase italic text-indigo-500">← Dominan
+                                        {{ $c1->nama }}</span>
+                                    <span class="text-[10px] font-black uppercase italic text-violet-500">Dominan
+                                        {{ $c2->nama }} →</span>
                                 </div>
                             </div>
                         @endif

@@ -1,6 +1,6 @@
 @extends('Template.Layouts.auth')
 
-@section('title', 'Login - SIM Bulog')
+@section('title', 'Login - Seleksi Karyawan Terbaik BULOG')
 
 @section('content')
     <div class="flex min-h-screen items-center justify-center bg-slate-50 p-6">
@@ -17,31 +17,32 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-yellow-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" />
                         </svg>
                     </div>
                     <h1 class="text-4xl font-black leading-tight tracking-tighter">
-                        Sistem Informasi <br> <span class="text-yellow-400">Pengambilan Keputusan </span>
+                        Sistem Seleksi <br> <span class="text-yellow-400">Karyawan Terbaik</span>
                     </h1>
-                    <p class="mt-4 text-lg font-medium text-blue-100/80">Perusahaan Umum Badan Urusan Logistik (Bulog)</p>
+                    <p class="mt-4 text-lg font-medium text-blue-100/80">Human Capital Management - Perum BULOG</p>
                 </div>
 
                 <div class="relative z-10">
                     <div class="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md">
                         <p class="text-sm italic leading-relaxed text-blue-100">
-                            "Mengemban amanah mewujudkan kedaulatan pangan nasional melalui pengelolaan logistik pangan yang
-                            terintegrasi."
+                            "Apresiasi atas dedikasi dan kinerja unggul insan BULOG untuk mewujudkan kedaulatan pangan
+                            dengan integritas."
                         </p>
                     </div>
-                    <p class="mt-8 text-xs font-bold uppercase tracking-widest text-blue-300">© 2026 Perum BULOG - IT
-                        Division</p>
+                    <p class="mt-8 text-xs font-bold uppercase tracking-widest text-blue-300">© 2026 Perum BULOG -
+                        Achievement System</p>
                 </div>
             </div>
 
             <div class="p-10 md:p-16">
                 <div class="mb-10 text-center md:text-left">
-                    <h2 class="text-3xl font-black tracking-tight text-slate-800">Selamat Datang</h2>
-                    <p class="mt-2 text-sm font-medium text-slate-500">Silakan masuk untuk mengelola data logistik.</p>
+                    <h2 class="text-3xl font-black tracking-tight text-slate-800">Panel Penilai</h2>
+                    <p class="mt-2 text-sm font-medium text-slate-500">Masuk untuk memulai proses evaluasi kinerja karyawan.
+                    </p>
                 </div>
 
                 <form action="{{ url('login') }}" method="POST" class="space-y-6">
@@ -49,8 +50,7 @@
 
                     <div class="form-control w-full">
                         <label class="label mb-1 px-1">
-                            <span class="text-[11px] font-black uppercase tracking-widest text-slate-400">Email
-                                Pegawai</span>
+                            <span class="text-[11px] font-black uppercase tracking-widest text-slate-400"> Email</span>
                         </label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
@@ -62,55 +62,47 @@
                             </span>
                             <input type="email" name="email" value="{{ old('email') }}" required
                                 class="input input-bordered w-full rounded-2xl border-slate-200 bg-slate-50 pl-12 transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
-                                placeholder="nama@bulog.co.id">
+                                placeholder="admin@gmail.com">
                         </div>
                         @error('email')
                             <span class="mt-1 px-1 text-xs font-bold text-rose-500">{{ $message }}</span>
                         @enderror
                     </div>
 
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                        </span>
-                        <input type="password" id="password" name="password" required
-                            class="input input-bordered w-full rounded-2xl border-slate-200 bg-slate-50 pl-12 pr-12 transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
-                            placeholder="••••••••">
-
-                        <button type="button" onclick="togglePasswordVisibility()"
-                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-blue-600">
-                            <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path id="eye-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path id="eye-back-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    {{-- <div class="flex items-center px-1">
-                        <label class="label cursor-pointer gap-3">
-                            <input type="checkbox" class="checkbox-primary checkbox checkbox-sm rounded-lg"
-                                name="remember" />
-                            <span class="text-xs font-bold uppercase tracking-wide text-slate-500">Tetap Masuk</span>
+                    <div class="form-control w-full">
+                        <label class="label mb-1 px-1">
+                            <span class="text-[11px] font-black uppercase tracking-widest text-slate-400">Kata Sandi</span>
                         </label>
-                    </div> --}}
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </span>
+                            <input type="password" id="password" name="password" required
+                                class="input input-bordered w-full rounded-2xl border-slate-200 bg-slate-50 pl-12 pr-12 transition-all focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                                placeholder="••••••••">
+
+                            <button type="button" onclick="togglePasswordVisibility()"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-blue-600">
+                                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path id="eye-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path id="eye-back-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
 
                     <button type="submit"
                         class="btn btn-primary w-full rounded-2xl border-none bg-blue-900 py-4 font-black uppercase tracking-[0.2em] text-white shadow-xl shadow-blue-100 transition-all hover:bg-blue-800 active:scale-95">
-                        Masuk ke Sistem
+                        Masuk ke Dashboard
                     </button>
                 </form>
-
-                {{-- <p class="mt-10 text-center text-xs font-medium text-slate-400">
-                    Mengalami kendala? <a href="#" class="font-bold text-blue-600 hover:underline">Hubungi IT Support
-                        Bulog</a>
-                </p> --}}
             </div>
         </div>
     </div>
