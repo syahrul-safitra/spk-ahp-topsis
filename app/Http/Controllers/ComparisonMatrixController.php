@@ -6,6 +6,8 @@ use App\Models\ComparisonMatrix;
 use App\Models\Criteria;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+
 class ComparisonMatrixController extends Controller
 {
     /**
@@ -34,42 +36,49 @@ class ComparisonMatrixController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
     public function store(Request $request)
-    {
+{   
+    // 1. Hapus data lama (di luar transaksi agar aman)
+    ComparisonMatrix::query()->delete(); 
 
-        foreach ($request->nilai as $i => $row) {
-            foreach ($row as $j => $value) {
+    // 2. Jalankan transaksi
+    DB::transaction(function () use ($request) {
+        if ($request->has('nilai')) {
+            foreach ($request->nilai as $i => $row) {
+                foreach ($row as $j => $value) {
+                    
+                    if ($i == $j || is_null($value)) continue;
 
-                $nilai = str_contains($value, '/')
-                    ? eval("return $value;") // "1/5" → 0.2
-                    : (float) $value;
+                    // Parsing nilai
+                    if (str_contains($value, '/')) {
+                        $parts = explode('/', $value);
+                        $nilai = (float)$parts[0] / (float)$parts[1];
+                    } else {
+                        $nilai = (float)$value;
+                    }
 
-                ComparisonMatrix::updateOrCreate(
-                    [
-                        'criteria_1_id' => $i,
-                        'criteria_2_id' => $j,
-                    ],
-                    [
-                        'nilai' => $nilai,
-                    ]
-                );
+                    // Logika i < j agar tidak terjadi double input
+                    if ($i < $j) {
+                        ComparisonMatrix::create([
+                            'criteria_1_id' => $i,
+                            'criteria_2_id' => $j,
+                            'nilai' => $nilai,
+                        ]);
 
-                // otomatis simpan kebalikannya
-                ComparisonMatrix::updateOrCreate(
-                    [
-                        'criteria_1_id' => $j,
-                        'criteria_2_id' => $i,
-                    ],
-                    [
-                        'nilai' => 1 / $nilai,
-                    ]
-                );
+                        ComparisonMatrix::create([
+                            'criteria_1_id' => $j,
+                            'criteria_2_id' => $i,
+                            'nilai' => 1 / $nilai,
+                        ]);
+                    }
+                }
             }
         }
+    }); // Penutup transaksi
 
-        return back()->with('success', 'Berhasil membandingkan kriteria');
-
-    }
+    return back()->with('success', 'Berhasil membandingkan kriteria dengan presisi tinggi.');
+} // Penutup fungsi store
 
     /**
      * Display the specified resource.

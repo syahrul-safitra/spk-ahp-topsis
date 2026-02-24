@@ -13,7 +13,6 @@ class AhpService
         $n = $kriteria->count();
 
         if ($n < 2) {
-
             throw new \Exception('Jumlah kriteria minimal 2');
         }
 
@@ -34,21 +33,23 @@ class AhpService
         // Ambil perbandingan
         $comparisons = ComparisonMatrix::all();
         foreach ($comparisons as $row) {
-            $i = $index[$row->criteria_1_id];
-            $j = $index[$row->criteria_2_id];
-            $matrix[$i][$j] = $row->nilai;
+            if (isset($index[$row->criteria_1_id]) && isset($index[$row->criteria_2_id])) {
+                $i = $index[$row->criteria_1_id];
+                $j = $index[$row->criteria_2_id];
+                $matrix[$i][$j] = (double) $row->nilai;
+            }
         }
 
         // Validasi matrix lengkap
         for ($i = 0; $i < $n; $i++) {
             for ($j = 0; $j < $n; $j++) {
                 if ($matrix[$i][$j] == 0) {
-                    throw new \Exception('Matrix AHP belum lengkap');
+                    throw new \Exception('Matrix AHP belum lengkap. Pastikan semua kriteria sudah dibandingkan.');
                 }
             }
         }
 
-        // 1️⃣ Jumlah kolom
+        // 1️⃣ Hitung Jumlah Kolom (ColSum)
         $colSum = array_fill(0, $n, 0);
         for ($j = 0; $j < $n; $j++) {
             for ($i = 0; $i < $n; $i++) {
@@ -56,60 +57,55 @@ class AhpService
             }
         }
 
-        // 2️⃣ Normalisasi
+        // 2️⃣ Normalisasi & 3️⃣ Hitung Bobot (Eigen Vector)
         $normalized = [];
-        for ($i = 0; $i < $n; $i++) {
-            for ($j = 0; $j < $n; $j++) {
-                $normalized[$i][$j] = $matrix[$i][$j] / $colSum[$j];
-            }
-        }
-
-        // 3️⃣ Bobot
         $weights = [];
         for ($i = 0; $i < $n; $i++) {
-            $weights[$i] = array_sum($normalized[$i]) / $n;
-        }
-
-        // 4️⃣ Lambda max
-        $lambda = [];
-        for ($i = 0; $i < $n; $i++) {
-            $sum = 0;
+            $rowSumNormalized = 0;
             for ($j = 0; $j < $n; $j++) {
-                $sum += $matrix[$i][$j] * $weights[$j];
+                $normalized[$i][$j] = $matrix[$i][$j] / $colSum[$j];
+                $rowSumNormalized += $normalized[$i][$j];
             }
-            $lambda[$i] = $sum / $weights[$i];
+            // Bobot adalah rata-rata nilai baris yang telah dinormalisasi
+            $weights[$i] = $rowSumNormalized / $n;
         }
 
-        $lambdaMax = array_sum($lambda) / $n;
+        // 4️⃣ Lambda Max (Metode Perkalian Matriks: Total Kolom * Bobot)
+        // Ini adalah cara yang paling akurat dan sesuai dengan Excel
+        $lambdaMax = 0;
+        for ($j = 0; $j < $n; $j++) {
+            $lambdaMax += $colSum[$j] * $weights[$j];
+        }
 
-        // 5️⃣ CI & CR
+        // 5️⃣ CI & CR (Consistency Index & Ratio)
         $ci = ($lambdaMax - $n) / ($n - 1);
+        
         $riTable = [
             1 => 0.00, 2 => 0.00, 3 => 0.58, 4 => 0.90,
             5 => 1.12, 6 => 1.24, 7 => 1.32, 8 => 1.41,
             9 => 1.45, 10 => 1.49
         ];
+        
         $ri = $riTable[$n] ?? 1.49;
         $cr = $ri == 0 ? 0 : $ci / $ri;
 
         // 6️⃣ Simpan bobot JIKA konsisten
-        if ($cr <= 0.1) {
+        $consistent = $cr <= 0.1;
+        if ($consistent) {
             foreach ($kriteria as $i => $k) {
                 $k->update(['bobot' => $weights[$i]]);
             }
         }
 
-        $consistent = $cr <= 0.1; // true jika CR <= 0.1, false jika > 0.1
-
-        return compact(
-            'matrix',
-            'normalized',
-            'weights',
-            'lambdaMax',
-            'ci',
-            'cr',
-            'consistent'
-        );
+        return [
+            'matrix'      => $matrix,
+            'normalized'  => $normalized,
+            'weights'     => $weights,
+            'lambdaMax'   => $lambdaMax,
+            'ci'          => $ci,
+            'cr'          => $cr,
+            'consistent'  => $consistent,
+            'colSum'      => $colSum
+        ];
     }
-
 }

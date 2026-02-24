@@ -6,6 +6,7 @@ use App\Http\Controllers\ComparisonMatrixController;
 use App\Http\Controllers\CriteriaController;
 use App\Http\Controllers\SpkController;
 use App\Http\Controllers\UserController;
+use App\Models\ComparisonMatrix;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,3 +43,7 @@ Route::get('/test', function () {
 });
 
 Route::get('/ahp-test', [SpkController::class, 'testAhp'])->middleware('auth');
+
+Route::get('/test-comparison', function() {
+    return ComparisonMatrix::select('criteria_1_id', 'criteria_2_id', 'nilai')->orderBy('id')->get();
+});

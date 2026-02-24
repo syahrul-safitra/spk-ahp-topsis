@@ -238,24 +238,33 @@
 
                                     @php
                                         $rightScales = [
-                                            '0.5' => '2',
-                                            '0.333333' => '3',
-                                            '0.25' => '4',
-                                            '0.2' => '5',
-                                            '0.166667' => '6',
-                                            '0.142857' => '7',
-                                            '0.125' => '8',
-                                            '0.111111' => '9',
+                                            '1/2' => 2,
+                                            '1/3' => 3,
+                                            '1/4' => 4,
+                                            '1/5' => 5,
+                                            '1/6' => 6,
+                                            '1/7' => 7,
+                                            '1/8' => 8,
+                                            '1/9' => 9,
                                         ];
                                     @endphp
 
                                     @foreach ($rightScales as $val => $lbl)
+                                        @php
+                                            // Hitung nilai numerik dari string pecahan (misal '1/6' jadi 0.1666...)
+                                            $numericVal = eval("return $val;");
+
+                                            // Cek apakah currentValue mendekati nilai numerik ini (toleransi selisih sangat kecil)
+                                            $isChecked =
+                                                !is_null($currentValue) && abs($currentValue - $numericVal) < 0.00001;
+                                        @endphp
+
                                         <label class="group/item flex cursor-pointer flex-col items-center gap-2"
                                             title="Kriteria B lebih penting skor {{ $lbl }}">
                                             <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                                 value="{{ $val }}"
                                                 class="radio radio-secondary radio-sm border-slate-300 transition-all checked:bg-violet-600"
-                                                {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
+                                                {{ $isChecked || old("nilai.$c1->id.$c2->id") === $val ? 'checked' : '' }}>
                                             <span
                                                 class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
                                         </label>
