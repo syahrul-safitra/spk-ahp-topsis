@@ -15,11 +15,21 @@ class CriteriaController extends Controller
     public function dashboard(TopsisService $topsis)
     {
 
+        // $data = $topsis->calculate();
+
+        // $data['countUser'] = User::count();
+
+        // return view('Template.dashboard', $data);
+
+        $topsis = new TopsisService();
         $data = $topsis->calculate();
 
-        $data['countUser'] = User::count();
-
-        return view('Template.dashboard', $data);
+        return view('Template.dashboard', [
+            'criterias'    => $data['criterias'] ?? [],
+            'alternatives' => $data['alternatives'] ?? [],
+            'rankings'     => $data['rankings'] ?? [],
+            'countUser'    => User::count(),
+        ]);
     }
 
     public function index()

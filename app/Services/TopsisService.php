@@ -211,102 +211,213 @@ class TopsisService
     //     ];
     // }
 
+    // public function calculate()
+    // {
+    //     $criterias = Criteria::orderBy('id')->get();
+    //     $alternatives = Alternative::with('values')->get(); // tetap Collection
+
+    //     $nAlt = $alternatives->count();
+    //     $nCrit = $criterias->count();
+
+    //     // 1️⃣ Matriks keputusan
+    //     $matrix = [];
+    //     foreach ($alternatives as $alt) {
+    //         $row = [];
+    //         foreach ($criterias as $c) {
+    //             $val = $alt->values->where('criteria_id', $c->id)->first();
+    //             $row[] = $val ? $val->nilai : 0;
+    //         }
+    //         $matrix[] = $row;
+    //     }
+
+    //     // 2️⃣ Matriks normalisasi
+    //     $normalized = [];
+    //     for ($j = 0; $j < $nCrit; $j++) {
+    //         $sumSq = 0;
+    //         for ($i = 0; $i < $nAlt; $i++) {
+    //             $sumSq += $matrix[$i][$j] ** 2;
+    //         }
+    //         $sqrtSum = sqrt($sumSq);
+    //         for ($i = 0; $i < $nAlt; $i++) {
+    //             $normalized[$i][$j] = $sqrtSum ? $matrix[$i][$j] / $sqrtSum : 0;
+    //         }
+    //     }
+
+    //     // 3️⃣ Matriks terbobot
+    //     $weights = $criterias->pluck('bobot')->toArray();
+    //     $weighted = [];
+    //     for ($i = 0; $i < $nAlt; $i++) {
+    //         for ($j = 0; $j < $nCrit; $j++) {
+    //             $weighted[$i][$j] = $normalized[$i][$j] * $weights[$j];
+    //         }
+    //     }
+
+    //     // 4️⃣ Solusi ideal positif & negatif
+    //     $idealPositive = [];
+    //     $idealNegative = [];
+    //     for ($j = 0; $j < $nCrit; $j++) {
+    //         $col = array_column($weighted, $j);
+    //         if ($criterias[$j]->atribut === 'benefit') {
+    //             $idealPositive[$j] = max($col);
+    //             $idealNegative[$j] = min($col);
+    //         } else { // cost
+    //             $idealPositive[$j] = min($col);
+    //             $idealNegative[$j] = max($col);
+    //         }
+    //     }
+
+    //     // 5️⃣ Jarak ke solusi ideal
+    //     $distPos = [];
+    //     $distNeg = [];
+    //     $scores = [];
+    //     for ($i = 0; $i < $nAlt; $i++) {
+    //         $sumPos = 0;
+    //         $sumNeg = 0;
+    //         for ($j = 0; $j < $nCrit; $j++) {
+    //             $sumPos += ($weighted[$i][$j] - $idealPositive[$j]) ** 2;
+    //             $sumNeg += ($weighted[$i][$j] - $idealNegative[$j]) ** 2;
+    //         }
+    //         $distPos[$i] = sqrt($sumPos);
+    //         $distNeg[$i] = sqrt($sumNeg);
+
+    //         $scores[$i] = ($distPos[$i] + $distNeg[$i]) != 0
+    //             ? $distNeg[$i] / ($distPos[$i] + $distNeg[$i])
+    //             : 0;
+    //     }
+
+    //     // 6️⃣ Simpan skor ke alternatif (dinamis)
+    //     foreach ($alternatives as $i => $alt) {
+    //         $alt->skor = $scores[$i];
+    //     }
+
+    //     // 7️⃣ Ranking
+    //     $rankings = $alternatives->sortByDesc('skor')->values();
+
+    //     return [
+    //         'criterias' => $criterias,
+    //         'weights' => $weights,
+    //         'alternatives' => $alternatives,
+    //         'matrix' => $matrix,
+    //         'normalized' => $normalized,
+    //         'weighted' => $weighted,
+    //         'idealPositive' => $idealPositive,
+    //         'idealNegative' => $idealNegative,
+    //         'distPos' => $distPos,
+    //         'distNeg' => $distNeg,
+    //         'scores' => $scores,
+    //         'rankings' => $rankings,
+    //     ];
+    // }
+
     public function calculate()
-    {
-        $criterias = Criteria::orderBy('id')->get();
-        $alternatives = Alternative::with('values')->get(); // tetap Collection
+{
+    $criterias = Criteria::orderBy('id')->get();
+    $alternatives = Alternative::with('values')->get();
 
-        $nAlt = $alternatives->count();
-        $nCrit = $criterias->count();
+    $nAlt = $alternatives->count();
+    $nCrit = $criterias->count();
 
-        // 1️⃣ Matriks keputusan
-        $matrix = [];
-        foreach ($alternatives as $alt) {
-            $row = [];
-            foreach ($criterias as $c) {
-                $val = $alt->values->where('criteria_id', $c->id)->first();
-                $row[] = $val ? $val->nilai : 0;
-            }
-            $matrix[] = $row;
-        }
-
-        // 2️⃣ Matriks normalisasi
-        $normalized = [];
-        for ($j = 0; $j < $nCrit; $j++) {
-            $sumSq = 0;
-            for ($i = 0; $i < $nAlt; $i++) {
-                $sumSq += $matrix[$i][$j] ** 2;
-            }
-            $sqrtSum = sqrt($sumSq);
-            for ($i = 0; $i < $nAlt; $i++) {
-                $normalized[$i][$j] = $sqrtSum ? $matrix[$i][$j] / $sqrtSum : 0;
-            }
-        }
-
-        // 3️⃣ Matriks terbobot
-        $weights = $criterias->pluck('bobot')->toArray();
-        $weighted = [];
-        for ($i = 0; $i < $nAlt; $i++) {
-            for ($j = 0; $j < $nCrit; $j++) {
-                $weighted[$i][$j] = $normalized[$i][$j] * $weights[$j];
-            }
-        }
-
-        // 4️⃣ Solusi ideal positif & negatif
-        $idealPositive = [];
-        $idealNegative = [];
-        for ($j = 0; $j < $nCrit; $j++) {
-            $col = array_column($weighted, $j);
-            if ($criterias[$j]->atribut === 'benefit') {
-                $idealPositive[$j] = max($col);
-                $idealNegative[$j] = min($col);
-            } else { // cost
-                $idealPositive[$j] = min($col);
-                $idealNegative[$j] = max($col);
-            }
-        }
-
-        // 5️⃣ Jarak ke solusi ideal
-        $distPos = [];
-        $distNeg = [];
-        $scores = [];
-        for ($i = 0; $i < $nAlt; $i++) {
-            $sumPos = 0;
-            $sumNeg = 0;
-            for ($j = 0; $j < $nCrit; $j++) {
-                $sumPos += ($weighted[$i][$j] - $idealPositive[$j]) ** 2;
-                $sumNeg += ($weighted[$i][$j] - $idealNegative[$j]) ** 2;
-            }
-            $distPos[$i] = sqrt($sumPos);
-            $distNeg[$i] = sqrt($sumNeg);
-
-            $scores[$i] = ($distPos[$i] + $distNeg[$i]) != 0
-                ? $distNeg[$i] / ($distPos[$i] + $distNeg[$i])
-                : 0;
-        }
-
-        // 6️⃣ Simpan skor ke alternatif (dinamis)
-        foreach ($alternatives as $i => $alt) {
-            $alt->skor = $scores[$i];
-        }
-
-        // 7️⃣ Ranking
-        $rankings = $alternatives->sortByDesc('skor')->values();
-
-        return [
-            'criterias' => $criterias,
-            'weights' => $weights,
-            'alternatives' => $alternatives,
-            'matrix' => $matrix,
-            'normalized' => $normalized,
-            'weighted' => $weighted,
-            'idealPositive' => $idealPositive,
-            'idealNegative' => $idealNegative,
-            'distPos' => $distPos,
-            'distNeg' => $distNeg,
-            'scores' => $scores,
-            'rankings' => $rankings,
-        ];
+    // KEAMANAN: Jika kriteria atau alternatif kosong, jangan lanjutkan
+    if ($nCrit === 0 || $nAlt === 0) {
+        return null; 
     }
+
+    // 1️⃣ Matriks keputusan
+    $matrix = [];
+    foreach ($alternatives as $alt) {
+        $row = [];
+        foreach ($criterias as $c) {
+            $val = $alt->values->where('criteria_id', $c->id)->first();
+            $row[] = $val ? $val->nilai : 0;
+        }
+        $matrix[] = $row;
+    }
+
+    // 2️⃣ Matriks normalisasi
+    $normalized = [];
+    for ($j = 0; $j < $nCrit; $j++) {
+        $sumSq = 0;
+        for ($i = 0; $i < $nAlt; $i++) {
+            $sumSq += $matrix[$i][$j] ** 2;
+        }
+        $sqrtSum = sqrt($sumSq);
+        for ($i = 0; $i < $nAlt; $i++) {
+            $normalized[$i][$j] = $sqrtSum ? $matrix[$i][$j] / $sqrtSum : 0;
+        }
+    }
+
+    // 3️⃣ Matriks terbobot
+    $weights = $criterias->pluck('bobot')->toArray();
+    $weighted = [];
+    for ($i = 0; $i < $nAlt; $i++) {
+        for ($j = 0; $j < $nCrit; $j++) {
+            $weighted[$i][$j] = $normalized[$i][$j] * ($weights[$j] ?? 0);
+        }
+    }
+
+    // 4️⃣ Solusi ideal positif & negatif
+    $idealPositive = [];
+    $idealNegative = [];
+    for ($j = 0; $j < $nCrit; $j++) {
+        $col = array_column($weighted, $j);
+        
+        // KEAMANAN: Cek apakah kolom ada isinya sebelum max/min
+        if (empty($col)) {
+            $idealPositive[$j] = 0;
+            $idealNegative[$j] = 0;
+            continue;
+        }
+
+        if ($criterias[$j]->atribut === 'benefit') {
+            $idealPositive[$j] = max($col);
+            $idealNegative[$j] = min($col);
+        } else { // cost
+            $idealPositive[$j] = min($col);
+            $idealNegative[$j] = max($col);
+        }
+    }
+
+    // 5️⃣ Jarak ke solusi ideal
+    $distPos = [];
+    $distNeg = [];
+    $scores = [];
+    for ($i = 0; $i < $nAlt; $i++) {
+        $sumPos = 0;
+        $sumNeg = 0;
+        for ($j = 0; $j < $nCrit; $j++) {
+            $sumPos += ($weighted[$i][$j] - ($idealPositive[$j] ?? 0)) ** 2;
+            $sumNeg += ($weighted[$i][$j] - ($idealNegative[$j] ?? 0)) ** 2;
+        }
+        $distPos[$i] = sqrt($sumPos);
+        $distNeg[$i] = sqrt($sumNeg);
+
+        $scores[$i] = ($distPos[$i] + $distNeg[$i]) != 0
+            ? $distNeg[$i] / ($distPos[$i] + $distNeg[$i])
+            : 0;
+    }
+
+    // 6️⃣ Simpan skor ke alternatif
+    foreach ($alternatives as $i => $alt) {
+        $alt->skor = $scores[$i] ?? 0;
+    }
+
+    // 7️⃣ Ranking
+    $rankings = $alternatives->sortByDesc('skor')->values();
+
+    return [
+        'criterias' => $criterias,
+        'weights' => $weights,
+        'alternatives' => $alternatives,
+        'matrix' => $matrix,
+        'normalized' => $normalized,
+        'weighted' => $weighted,
+        'idealPositive' => $idealPositive,
+        'idealNegative' => $idealNegative,
+        'distPos' => $distPos,
+        'distNeg' => $distNeg,
+        'scores' => $scores,
+        'rankings' => $rankings,
+    ];
+}
 
 }
