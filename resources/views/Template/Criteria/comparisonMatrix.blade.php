@@ -1,11 +1,11 @@
-@extends('Template.Layouts.main')
+@extends("Template.Layouts.main")
 
-@section('title', 'Perbandingan Kriteria AHP')
+@section("title", "Perbandingan Kriteria AHP")
 
-@section('content')
+@section("content")
     <div class="mx-auto max-w-5xl space-y-8">
 
-        @if (session('success'))
+        @if (session("success"))
             <div id="success-alert"
                 class="group relative mb-8 translate-y-0 transform overflow-hidden opacity-100 transition-all duration-500">
                 <div
@@ -28,7 +28,7 @@
                             <div>
                                 <h4 class="mb-1 text-sm font-black uppercase leading-none tracking-tight text-slate-800">
                                     Berhasil Disimpan!</h4>
-                                <p class="text-xs font-medium italic text-slate-500">{{ session('success') }}</p>
+                                <p class="text-xs font-medium italic text-slate-500">{{ session("success") }}</p>
                             </div>
                         </div>
 
@@ -58,7 +58,7 @@
             </script>
         @endif
 
-        @session('errorMatrix')
+        @session("errorMatrix")
             <div id="error-alert"
                 class="relative mb-8 scale-100 transform animate-[shake_0.5s_ease-in-out] transition-all duration-500">
                 <div class="rounded-[2rem] bg-gradient-to-r from-rose-500 to-orange-600 p-[1.5px] shadow-2xl shadow-rose-100">
@@ -140,14 +140,14 @@
             </div>
         </div>
 
-        <form action="{{ url('comparison-matrix') }}" method="POST" class="space-y-6">
+        <form action="{{ url("comparison-matrix") }}" method="POST" class="space-y-6">
             @csrf
 
             <div
                 class="rounded-[2.5rem] border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-8 shadow-xl shadow-indigo-100/50">
                 <div class="flex flex-col items-start gap-6 md:flex-row md:items-center">
                     <div
-                        class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white shadow-lg shadow-indigo-100 text-indigo-600">
+                        class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-lg shadow-indigo-100">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -168,38 +168,38 @@
                 <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
                     @php
                         $scales = [
-                            ['val' => '1', 'title' => 'Sama', 'desc' => 'Kedua kriteria berpengaruh sama'],
-                            ['val' => '3', 'title' => 'Sedikit', 'desc' => 'Satu kriteria sedikit lebih kuat'],
-                            ['val' => '5', 'title' => 'Lebih', 'desc' => 'Satu kriteria berpengaruh kuat'],
-                            ['val' => '7', 'title' => 'Sangat', 'desc' => 'Satu kriteria sangat dominan'],
-                            ['val' => '9', 'title' => 'Mutlak', 'desc' => 'Perbedaan sangat ekstrem'],
-                            ['val' => '2,4,6,8', 'title' => 'Tengah', 'desc' => 'Nilai kompromi/antara'],
+                            ["val" => "1", "title" => "Sama", "desc" => "Kedua kriteria berpengaruh sama"],
+                            ["val" => "3", "title" => "Sedikit", "desc" => "Satu kriteria sedikit lebih kuat"],
+                            ["val" => "5", "title" => "Lebih", "desc" => "Satu kriteria berpengaruh kuat"],
+                            ["val" => "7", "title" => "Sangat", "desc" => "Satu kriteria sangat dominan"],
+                            ["val" => "9", "title" => "Mutlak", "desc" => "Perbedaan sangat ekstrem"],
+                            ["val" => "2,4,6,8", "title" => "Tengah", "desc" => "Nilai kompromi/antara"]
                         ];
                     @endphp
 
                     @foreach ($scales as $scale)
                         @php
-                            $isEven = $scale['val'] === '2,4,6,8';
+                            $isEven = $scale["val"] === "2,4,6,8";
                         @endphp
                         <div
-                            class="group relative overflow-hidden rounded-2xl border transition-all duration-300 {{ $isEven ? 'border-slate-200 bg-slate-100/50' : 'border-white bg-white/60 hover:border-indigo-200 hover:bg-white hover:shadow-md' }} p-4">
+                            class="{{ $isEven ? "border-slate-200 bg-slate-100/50" : "border-white bg-white/60 hover:border-indigo-200 hover:bg-white hover:shadow-md" }} group relative overflow-hidden rounded-2xl border p-4 transition-all duration-300">
 
                             <span
-                                class="absolute -right-2 -top-2 text-4xl font-black text-slate-900/[0.03] group-hover:text-indigo-600/[0.05] transition-colors">
-                                {{ is_numeric($scale['val']) ? $scale['val'] : '±' }}
+                                class="absolute -right-2 -top-2 text-4xl font-black text-slate-900/[0.03] transition-colors group-hover:text-indigo-600/[0.05]">
+                                {{ is_numeric($scale["val"]) ? $scale["val"] : "±" }}
                             </span>
 
                             <span
-                                class="relative block text-2xl font-black {{ $isEven ? 'text-slate-500' : 'text-indigo-600 group-hover:scale-110' }} transition-transform duration-300">
-                                {{ $scale['val'] }}
+                                class="{{ $isEven ? "text-slate-500" : "text-indigo-600 group-hover:scale-110" }} relative block text-2xl font-black transition-transform duration-300">
+                                {{ $scale["val"] }}
                             </span>
 
                             <h5 class="relative mt-1 text-[10px] font-black uppercase tracking-wider text-slate-700">
-                                {{ $scale['title'] }}
+                                {{ $scale["title"] }}
                             </h5>
 
                             <p class="relative mt-1 text-[9px] font-medium leading-tight text-slate-400">
-                                {{ $scale['desc'] }}
+                                {{ $scale["desc"] }}
                             </p>
                         </div>
                     @endforeach
@@ -215,37 +215,37 @@
                             <div class="rounded-3xl bg-slate-50/50 p-6 lg:p-8">
                                 <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
 
-                                    @foreach (['9', '8', '7', '6', '5', '4', '3', '2'] as $val)
+                                    @foreach (["9", "8", "7", "6", "5", "4", "3", "2"] as $val)
                                         <label class="group/item flex cursor-pointer flex-col items-center gap-2"
                                             title="Kriteria A lebih penting skor {{ $val }}">
                                             <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                                 value="{{ $val }}"
                                                 class="radio radio-primary radio-sm border-slate-300 transition-all checked:bg-indigo-600"
-                                                {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? 'checked' : '' }}>
+                                                {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === (string) $val ? "checked" : "" }}>
                                             <span
                                                 class="text-[10px] font-bold text-slate-400 group-hover/item:text-indigo-600">{{ $val }}</span>
                                         </label>
                                     @endforeach
 
-                                    <label class="group/item flex cursor-pointer flex-col items-center gap-2 mx-2">
+                                    <label class="group/item mx-2 flex cursor-pointer flex-col items-center gap-2">
                                         <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                             value="1"
                                             class="radio radio-sm border-slate-300 transition-all checked:bg-slate-700"
-                                            {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === '1' || is_null($currentValue) ? 'checked' : '' }}>
+                                            {{ (string) old("nilai.$c1->id.$c2->id", $currentValue) === "1" || is_null($currentValue) ? "checked" : "" }}>
                                         <span
-                                            class="badge badge-neutral h-5 text-[9px] font-black tracking-tighter px-2">1</span>
+                                            class="badge badge-neutral h-5 px-2 text-[9px] font-black tracking-tighter">1</span>
                                     </label>
 
                                     @php
                                         $rightScales = [
-                                            '1/2' => 2,
-                                            '1/3' => 3,
-                                            '1/4' => 4,
-                                            '1/5' => 5,
-                                            '1/6' => 6,
-                                            '1/7' => 7,
-                                            '1/8' => 8,
-                                            '1/9' => 9,
+                                            "1/2" => 2,
+                                            "1/3" => 3,
+                                            "1/4" => 4,
+                                            "1/5" => 5,
+                                            "1/6" => 6,
+                                            "1/7" => 7,
+                                            "1/8" => 8,
+                                            "1/9" => 9
                                         ];
                                     @endphp
 
@@ -264,7 +264,7 @@
                                             <input type="radio" name="nilai[{{ $c1->id }}][{{ $c2->id }}]"
                                                 value="{{ $val }}"
                                                 class="radio radio-secondary radio-sm border-slate-300 transition-all checked:bg-violet-600"
-                                                {{ $isChecked || old("nilai.$c1->id.$c2->id") === $val ? 'checked' : '' }}>
+                                                {{ $isChecked || old("nilai.$c1->id.$c2->id") === $val ? "checked" : "" }}>
                                             <span
                                                 class="text-[10px] font-bold text-slate-400 group-hover/item:text-violet-600">{{ $lbl }}</span>
                                         </label>
@@ -272,7 +272,7 @@
 
                                 </div>
 
-                                <div class="mt-6 flex justify-between px-1 border-t border-slate-100 pt-4">
+                                <div class="mt-6 flex justify-between border-t border-slate-100 px-1 pt-4">
                                     <span class="text-[10px] font-black uppercase italic text-indigo-500">← Dominan
                                         {{ $c1->nama }}</span>
                                     <span class="text-[10px] font-black uppercase italic text-violet-500">Dominan

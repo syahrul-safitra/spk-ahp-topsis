@@ -1,7 +1,7 @@
-@extends('Template.Layouts.main')
-@section('title', 'Data Alternatif')
+@extends("Template.Layouts.main")
+@section("title", "Data Alternatif")
 
-@section('content')
+@section("content")
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <style>
@@ -34,6 +34,77 @@
     </style>
 
     <div class="mx-auto space-y-6">
+
+        @session("warning")
+            <div id="error-alert"
+                class="relative mb-8 scale-100 transform animate-[shake_0.5s_ease-in-out] transition-all duration-500">
+                <div class="rounded-[2rem] bg-gradient-to-r from-rose-500 to-orange-600 p-[1.5px] shadow-2xl shadow-rose-100">
+
+                    <div class="flex flex-col items-center justify-between gap-4 rounded-[1.95rem] bg-white p-6 md:flex-row">
+
+                        <div class="flex items-center gap-5">
+                            <div class="relative flex shrink-0">
+                                <span
+                                    class="absolute inline-flex h-full w-full animate-ping rounded-2xl bg-rose-100 opacity-75"></span>
+                                <div
+                                    class="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-100 bg-rose-50 text-rose-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <div class="text-center md:text-left">
+                                <h4 class="text-lg font-black leading-tight tracking-tight text-slate-800">Ups! Perhitungan
+                                    Gagal</h4>
+                                <p class="mt-1 text-sm font-medium uppercase tracking-wide text-slate-500">
+                                    <span class="font-bold text-rose-600">Kesalahan:</span> Silahkan masukan data alternatif
+                                    terlebih dahulu.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="closeErrorAlert()"
+                                class="btn rounded-xl border-none bg-rose-500 px-6 font-bold normal-case text-white shadow-lg shadow-rose-200 hover:bg-rose-600">
+                                Perbaiki Sekarang
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                @keyframes shake {
+
+                    0%,
+                    100% {
+                        transform: translateX(0);
+                    }
+
+                    25% {
+                        transform: translateX(-5px);
+                    }
+
+                    75% {
+                        transform: translateX(5px);
+                    }
+                }
+            </style>
+
+            <script>
+                function closeErrorAlert() {
+                    const alert = document.getElementById('error-alert');
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'scale(0.95)';
+                    setTimeout(() => alert.remove(), 400);
+                }
+            </script>
+        @endsession
+
         <div class="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <div>
                 <h2 class="flex items-center gap-3 text-2xl font-black tracking-tight text-slate-800">
@@ -48,7 +119,7 @@
                 </h2>
             </div>
             @if ($criterias > 0)
-                <a href="{{ url('/alternative/create') }}"
+                <a href="{{ url("/alternative/create") }}"
                     class="btn btn-primary rounded-2xl px-8 shadow-lg shadow-indigo-100">
                     Tambah Alternatif Baru
                 </a>
@@ -64,14 +135,14 @@
             @endif
         </div>
 
-        @if (session('success'))
+        @if (session("success"))
             <div class="alert rounded-2xl border-emerald-100 bg-emerald-50 py-4 text-emerald-700 shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
                     viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span class="text-sm font-bold">{{ session('success') }}</span>
+                <span class="text-sm font-bold">{{ session("success") }}</span>
             </div>
         @endif
 
@@ -92,7 +163,7 @@
                             <tr class="group transition-colors hover:bg-slate-50/50">
                                 <td class="p-6 text-center">
                                     <span class="text-xs font-black text-slate-400 group-hover:text-emerald-500">
-                                        {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}
+                                        {{ str_pad($loop->iteration, 2, "0", STR_PAD_LEFT) }}
                                     </span>
                                 </td>
                                 <td class="p-6">
@@ -105,7 +176,7 @@
                                 </td>
                                 <td class="p-6 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ url('alternative/' . $item->id . '/edit') }}"
+                                        <a href="{{ url("alternative/" . $item->id . "/edit") }}"
                                             class="btn btn-ghost btn-sm btn-square rounded-xl border-none text-amber-500 shadow-none transition-all hover:scale-110 hover:bg-amber-50"
                                             title="Edit Data">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
@@ -149,7 +220,7 @@
                 </form>
                 <form id="form_delete_permanent" method="POST">
                     @csrf
-                    @method('DELETE')
+                    @method("DELETE")
                     <button type="submit"
                         class="btn btn-error rounded-2xl px-8 font-black text-white shadow-xl shadow-rose-100">
                         Ya, Hapus

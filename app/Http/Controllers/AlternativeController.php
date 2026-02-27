@@ -120,9 +120,14 @@ class AlternativeController extends Controller
 
     public function ranking(TopsisService $topsis)
     {
+
         $data = $topsis->calculate();
         $alternatives = Alternative::count();
         $data['alternativesCount'] = $alternatives;
+
+        if ($alternatives == 0) {
+            return redirect('/alternative')->with('warning', 'Silahkan input alternatif terlebih dahulu');
+        }
 
         // return $data;
 
